@@ -1,0 +1,8 @@
+{
+  "name": "vette/neos-fusion-parser",
+  "autoload": {
+    "psr-4": {
+      "Vette\\FusionParser\\": "src/"
+    }
+  }
+}
