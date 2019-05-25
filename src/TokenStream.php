@@ -1,36 +1,72 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vette\FusionParser;
+
+use Iterator;
 
 /**
  * Class TokenStream
  *
  * @package Vette\FusionParser
  */
-class TokenStream
+class TokenStream implements Iterator
 {
+    /** @var array<Token> */
     private $tokens;
+
+    /** @var Source|null */
     private $source;
+
+    /** @var int */
+    private $pointer;
 
 
     /**
      * TokenStream constructor.
      *
-     * @param array $tokens
+     * @param array<Token> $tokens
      * @param Source|null $source
      */
-    public function __construct(array $tokens, Source $source = null)
+    public function __construct(array $tokens, ?Source $source = null)
     {
+        $this->pointer = 0;
         $this->tokens = $tokens;
-        $this->source = $source ?: new Source('', '');
+        $this->source = $source;
 
-        foreach ($this->tokens as $token) {
-            if ($token == Token::WHITESPACE_TYPE) {
-                continue;
-            }
-
-            echo $token . ' ';
+        if ($source === null) {
+            $this->source = new Source('', '');
         }
     }
 
+    public function current(): Token
+    {
+        return $this->tokens[$this->pointer];
+    }
+
+    public function next(): void
+    {
+        $this->pointer++;
+    }
+
+    public function key(): int
+    {
+        return $this->pointer;
+    }
+
+    public function valid(): bool
+    {
+        return isset($this->tokens[$this->pointer]);
+    }
+
+    public function rewind(): void
+    {
+        $this->pointer = 0;
+    }
+
+    public function getSource(): ?Source
+    {
+        return $this->source;
+    }
 }

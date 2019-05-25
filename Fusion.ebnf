@@ -1,0 +1,31 @@
+File ::= (PathAction|Include|Namespace)*
+
+PathAction ::= Path (Assignment | Unset | Copy | Block)
+
+Block ::= "{" PathAction* "}"
+
+Prototype ::= "prototype" "(" ObjectIdentifier ")"
+
+ObjectIdentifier ::= "OBJECT_IDENTIFIER_TYPE" (":" "OBJECT_IDENTIFIER_TYPE")?
+
+Assignment ::= "=" (Object | Eel | "VALUES_STRING_TYPE" | "VALUES_BOOL_TYPE" | "VALUES_NULL_TYPE")
+
+Object ::= ObjectIdentifier Block?
+
+Eel ::= "${"  "}"
+
+Dsl ::= "DSL_START" "DSL_CODE" DSL_END"
+
+Unset ::= ">"
+
+Copy ::= "<" Path Block?
+
+Path ::= PathPart ("." PathPart)*
+
+PathPart ::= Prototype | MetaPath
+
+MetaPath ::= "@" "OBJECT_PATH_PART_TYPE"
+
+Include ::= "include" ":" "INCLUDE_VALUE"
+
+Namespace ::= "namespace" ":" "OBJECT_IDENTIFIER" "=" "OBJECT_IDENTIFIER"

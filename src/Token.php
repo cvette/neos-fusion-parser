@@ -1,104 +1,92 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Vette\FusionParser;
 
+use LogicException;
 
 /**
  * Represents a Token.
- *
- * @author Fabien Potencier <fabien@symfony.com>
  */
 final class Token
 {
+    /** @var string  */
     private $value;
+
+    /** @var int  */
     private $type;
+
+    /** @var int  */
     private $lineno;
 
-    const EOF_TYPE = -1;
-    const BLOCK_START_TYPE = 'BLOCK_START';
-    const BLOCK_END_TYPE = 'BLOCK_END';
-    const COPY_TYPE = 'COPY';
-    const UNSET_TYPE = 'UNSET';
-    const PROTOTYPE_KEYWORD_TYPE = 'PROTOTYPE_KEYWORD';
-    const LPAREN_TYPE = 'LPAREN';
-    const RPAREN_TYPE = 'RPAREN';
-    const COLON_TYPE = 'COLON';
-    const IDENTIFIER_TYPE = 'IDENTIFIER';
-    const ASSIGNMENT_TYPE = 'ASSIGNMENT';
-    const BOOLEAN_TYPE = 'BOOLEAN';
-    const NUMBER_TYPE = 'NUMBER';
-    const NULL_TYPE = 'NULL';
-    const LINE_BREAK = 'LINE_BREAK';
-    const WHITESPACE_TYPE = 'WHITESPACE';
-    const DOT_TYPE = 'DOT';
-    const LBRACE_TYPE = 'LBRACE';
-    const RBRACE_TYPE = 'RBRACE';
+    public const EOF_TYPE = -1;
+    public const WHITESPACE_TYPE = 0;
+    public const LINE_BREAK = 1;
+
+    public const DOT_TYPE = 2;
+    public const COLON_TYPE = 3;
+    public const LPAREN_TYPE = 4;
+    public const RPAREN_TYPE = 5;
+    public const LBRACE_TYPE = 6;
+    public const RBRACE_TYPE = 7;
+
+    public const INCLUDE_KEYWORD_TYPE = 8;
+    public const INCLUDE_VALUE_TYPE = 9;
+    public const NAMESPACE_KEYWORD_TYPE = 10;
+    public const PROTOTYPE_KEYWORD_TYPE = 11;
+    public const OBJECT_IDENTIFIER_TYPE = 12;
+    public const OBJECT_PATH_PART_TYPE = 13;
+    public const META_PROPERTY_KEYWORD_TYPE = 14;
+
+    public const COPY_TYPE = 15;
+    public const UNSET_TYPE = 16;
+    public const ASSIGNMENT_TYPE = 17;
+
+    public const DSL_START_TYPE = 18;
+    public const DSL_CODE_TYPE = 19;
+    public const DSL_END_TYPE = 20;
+
+    public const EEL_EXPRESSION_TYPE = 21;
+    public const NULL_VALUE_TYPE = 22;
+    public const BOOLEAN_VALUE_TYPE = 23;
+    public const NUMBER_VALUE_TYPE = 24;
+    public const FLOAT_NUMBER_VALUE_TYPE = 25;
+    public const STRING_VALUE_TYPE = 26;
+
 
     /**
-     * @param int    $type   The type of the token
-     * @param string $value  The token value
-     * @param int    $lineno The line position in the source
+     * @param int $type The type of the token
+     * @param string $value The token value
+     * @param int $lineno The line position in the source
      */
-    public function __construct($type, $value, $lineno)
+    public function __construct(int $type, string $value, int $lineno)
     {
         $this->type = $type;
         $this->value = $value;
         $this->lineno = $lineno;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return sprintf('%s(%s)', self::typeToString($this->type, true), $this->value);
+        return sprintf(
+            '%s(%s)',
+            self::typeToString($this->type, true),
+            $this->value
+        );
     }
 
-    /**
-     * Tests the current token for a type and/or a value.
-     *
-     * Parameters may be:
-     *  * just type
-     *  * type and value (or array of possible values)
-     *  * just value (or array of possible values) (NAME_TYPE is used as type)
-     *
-     * @param array|string|int  $type   The type to test
-     * @param array|string|null $values The token value
-     *
-     * @return bool
-     */
-    public function test($type, $values = null)
-    {
-        if (null === $values && !\is_int($type)) {
-            $values = $type;
-            $type = self::NAME_TYPE;
-        }
-
-        return ($this->type === $type) && (
-                null === $values ||
-                (\is_array($values) && \in_array($this->value, $values)) ||
-                $this->value == $values
-            );
-    }
-
-    /**
-     * @return int
-     */
-    public function getLine()
+    public function getLine(): int
     {
         return $this->lineno;
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
@@ -106,103 +94,99 @@ final class Token
     /**
      * Returns the constant representation (internal) of a given type.
      *
-     * @param int  $type  The type as an integer
+     * @param int $type The type as an integer
      * @param bool $short Whether to return a short representation or not
      *
      * @return string The string representation
      */
-    public static function typeToString($type, $short = false)
+    public static function typeToString(int $type, bool $short = false): string
     {
         switch ($type) {
             case self::EOF_TYPE:
                 $name = 'EOF_TYPE';
                 break;
-            case self::TEXT_TYPE:
-                $name = 'TEXT_TYPE';
+            case self::OBJECT_IDENTIFIER_TYPE:
+                $name = 'OBJECT_IDENTIFIER_TYPE';
                 break;
-            case self::BLOCK_START_TYPE:
-                $name = 'BLOCK_START_TYPE';
+            case self::WHITESPACE_TYPE:
+                $name = 'WHITESPACE_TYPE';
                 break;
-            case self::VAR_START_TYPE:
-                $name = 'VAR_START_TYPE';
+            case self::NUMBER_VALUE_TYPE:
+                $name = 'NUMBER_VALUE_TYPE';
                 break;
-            case self::BLOCK_END_TYPE:
-                $name = 'BLOCK_END_TYPE';
+            case self::FLOAT_NUMBER_VALUE_TYPE:
+                $name = 'FLOAT_NUMBER_VALUE_TYPE';
                 break;
-            case self::VAR_END_TYPE:
-                $name = 'VAR_END_TYPE';
+            case self::UNSET_TYPE:
+                $name = 'UNSET_TYPE';
                 break;
-            case self::NAME_TYPE:
-                $name = 'NAME_TYPE';
+            case self::LINE_BREAK:
+                $name = 'LINE_BREAK_TYPE';
                 break;
-            case self::NUMBER_TYPE:
-                $name = 'NUMBER_TYPE';
+            case self::COPY_TYPE:
+                $name = 'COPY_TYPE';
                 break;
-            case self::STRING_TYPE:
-                $name = 'STRING_TYPE';
+            case self::DOT_TYPE:
+                $name = 'DOT_TYPE';
                 break;
-            case self::OPERATOR_TYPE:
-                $name = 'OPERATOR_TYPE';
+            case self::COLON_TYPE:
+                $name = 'COLON_TYPE';
                 break;
-            case self::PUNCTUATION_TYPE:
-                $name = 'PUNCTUATION_TYPE';
+            case self::ASSIGNMENT_TYPE:
+                $name = 'ASSIGNMENT_TYPE';
                 break;
-            case self::INTERPOLATION_START_TYPE:
-                $name = 'INTERPOLATION_START_TYPE';
+            case self::NULL_VALUE_TYPE:
+                $name = 'NULL_VALUE_TYPE';
                 break;
-            case self::INTERPOLATION_END_TYPE:
-                $name = 'INTERPOLATION_END_TYPE';
+            case self::BOOLEAN_VALUE_TYPE:
+                $name = 'BOOLEAN_VALUE_TYPE';
                 break;
-            case self::ARROW_TYPE:
-                $name = 'ARROW_TYPE';
+            case self::RBRACE_TYPE:
+                $name = 'RBRACE_TYPE';
+                break;
+            case self::LBRACE_TYPE:
+                $name = 'LBRACE_TYPE';
+                break;
+            case self::RPAREN_TYPE:
+                $name = 'RPAREN_TYPE';
+                break;
+            case self::LPAREN_TYPE:
+                $name = 'LPAREN_TYPE';
+                break;
+            case self::INCLUDE_KEYWORD_TYPE:
+                $name = 'INCLUDE_KEYWORD_TYPE';
+                break;
+            case self::NAMESPACE_KEYWORD_TYPE:
+                $name = 'NAMESPACE_KEYWORD_TYPE';
+                break;
+            case self::PROTOTYPE_KEYWORD_TYPE:
+                $name = 'PROTOTYPE_KEYWORD_TYPE';
+                break;
+            case self::STRING_VALUE_TYPE:
+                $name = 'STRING_VALUE_TYPE';
+                break;
+            case self::OBJECT_PATH_PART_TYPE:
+                $name = 'OBJECT_PATH_PART_TYPE';
+                break;
+            case self::META_PROPERTY_KEYWORD_TYPE:
+                $name = 'META_PROPERTY_KEYWORD_TYPE';
+                break;
+            case self::EEL_EXPRESSION_TYPE:
+                $name = 'EEL_EXPRESSION_TYPE';
+                break;
+            case self::DSL_START_TYPE:
+                $name = 'DSL_START_TYPE';
+                break;
+            case self::DSL_CODE_TYPE:
+                $name = 'DSL_CODE_TYPE';
+                break;
+            case self::DSL_END_TYPE:
+                $name = 'DSL_END_TYPE';
                 break;
             default:
-                throw new \LogicException(sprintf('Token of type "%s" does not exist.', $type));
+                throw new LogicException(sprintf('Token of type "%s" does not exist.', $type));
         }
 
-        return $short ? $name : 'Twig\Token::'.$name;
-    }
-
-    /**
-     * Returns the English representation of a given type.
-     *
-     * @param int $type The type as an integer
-     *
-     * @return string The string representation
-     */
-    public static function typeToEnglish($type)
-    {
-        switch ($type) {
-            case self::EOF_TYPE:
-                return 'end of template';
-            case self::TEXT_TYPE:
-                return 'text';
-            case self::BLOCK_START_TYPE:
-                return 'begin of statement block';
-            case self::VAR_START_TYPE:
-                return 'begin of print statement';
-            case self::BLOCK_END_TYPE:
-                return 'end of statement block';
-            case self::VAR_END_TYPE:
-                return 'end of print statement';
-            case self::NAME_TYPE:
-                return 'name';
-            case self::NUMBER_TYPE:
-                return 'number';
-            case self::STRING_TYPE:
-                return 'string';
-            case self::OPERATOR_TYPE:
-                return 'operator';
-            case self::PUNCTUATION_TYPE:
-                return 'punctuation';
-            case self::INTERPOLATION_START_TYPE:
-                return 'begin of string interpolation';
-            case self::INTERPOLATION_END_TYPE:
-                return 'end of string interpolation';
-            case self::ARROW_TYPE:
-                return 'arrow function';
-            default:
-                throw new \LogicException(sprintf('Token of type "%s" does not exist.', $type));
-        }
+        return $short ? $name : 'Fusion\Token::' . $name;
     }
 }

@@ -1,12 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vette\FusionParser;
 
+/**
+ * Class Source
+ *
+ * @package Vette\FusionParser
+ */
 final class Source
 {
+    /** @var string */
     private $code;
+
+    /** @var string */
     private $name;
+
+    /** @var string */
     private $path;
+
 
     /**
      * @param string $code The template source code
@@ -25,7 +38,7 @@ final class Source
         return $this->code;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
