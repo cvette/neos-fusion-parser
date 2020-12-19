@@ -37,8 +37,8 @@ class Lexer
     private const LBRACE = '/{/A';
     private const RBRACE = '/}/A';
 
-    private const INCLUDE_KEYWORD = '/include/A';
-    private const NAMESPACE_KEYWORD = '/namespace/A';
+    private const INCLUDE_KEYWORD = '/include[ \t\f]?:/A';
+    private const NAMESPACE_KEYWORD = '/namespace[ \t\f]?:/A';
     private const INCLUDE_VALUE = '/.*/A';
 
     private const PROTOTYPE_KEYWORD = '/prototype/A';
@@ -262,9 +262,6 @@ class Lexer
                 },
             ],
             self::STATE_INCLUDE_FOUND => [
-                self::COLON => function (string $text): void {
-                    $this->pushToken(Token::COLON_TYPE, $text);
-                },
                 self::INCLUDE_VALUE => function (string $text): void {
                     $this->pushToken(Token::INCLUDE_VALUE_TYPE, $text);
                     $this->popState();

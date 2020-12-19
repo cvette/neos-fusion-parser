@@ -87,7 +87,6 @@ class Parser extends AbstractParser
     protected function parseInclude(): AstInclude
     {
         $this->expect(Token::INCLUDE_KEYWORD_TYPE);
-        $this->expect(Token::COLON_TYPE);
 
         $includeValue = $this->expect(Token::INCLUDE_VALUE_TYPE);
         return new AstInclude($includeValue);
@@ -101,7 +100,6 @@ class Parser extends AbstractParser
     protected function parseNamespace(): AstNamespace
     {
         $this->expect(Token::NAMESPACE_KEYWORD_TYPE);
-        $this->expect(Token::COLON_TYPE);
         $alias = $this->expect(Token::OBJECT_IDENTIFIER_TYPE);
         $this->expect(Token::ASSIGNMENT_TYPE);
         $namespace = $this->expect(Token::OBJECT_IDENTIFIER_TYPE);
