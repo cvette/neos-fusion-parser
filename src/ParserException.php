@@ -13,7 +13,7 @@ use Exception;
  */
 class ParserException extends Exception
 {
-    /** @var array<int> */
+    /** @var int[] */
     protected $expectedTokenTypes;
 
     /** @var Token */
@@ -23,13 +23,13 @@ class ParserException extends Exception
     protected $source;
 
     private const MESSAGE_SINGLE = 'Parser error: Expected %s got %s on line %s in %s';
-    private const MESSAGE_MULTIPLE = 'Parser error: Expected one of %s got %s on line %i in %s';
+    private const MESSAGE_MULTIPLE = 'Parser error: Expected one of %s got %s on line %s in %s';
 
 
     /**
      * ParserException constructor.
      *
-     * @param Source $source
+     * @param Source|null $source
      * @param array<int> $expectedTokenTypes
      * @param Token $actualToken
      */
@@ -44,30 +44,44 @@ class ParserException extends Exception
         parent::__construct($this->createMessage());
     }
 
+    /**
+     * @return string
+     */
     private function createMessage(): string
     {
         if (count($this->expectedTokenTypes) > 1) {
-            $this->createSingleExpectedTokenMessage();
+            return $this->createMultipleExpectedTokenMessage();
         } else if (count($this->expectedTokenTypes) === 1) {
-            $this->createMultipleExpectedTokenMessage();
+            return $this->createSingleExpectedTokenMessage();
         }
 
         return '';
     }
 
-    private function createSingleExpectedTokenMessage()
+    /**
+     * @return string
+     */
+    private function createMultipleExpectedTokenMessage(): string
     {
-        $expectedTokens = join(', ', $this->expectedTokenTypes);
+        $tokenTypes = [];
+        foreach ($this->expectedTokenTypes as $tokenType) {
+            $tokenTypes[] = Token::typeToString($tokenType, true);
+        }
+
+        $expectedTokens = join(', ', $tokenTypes);
         return sprintf(
             self::MESSAGE_MULTIPLE,
             $expectedTokens,
-            $tokenType = Token::typeToString($this->actualToken->getType(), true),
+            Token::typeToString($this->actualToken->getType(), true),
             $this->getLine(),
             $this->getFile()
         );
     }
 
-    private function createMultipleExpectedTokenMessage()
+    /**
+     * @return string
+     */
+    private function createSingleExpectedTokenMessage(): string
     {
         $expectedToken = reset($this->expectedTokenTypes);
         $expectedToken = Token::typeToString($expectedToken, true);
