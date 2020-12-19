@@ -177,6 +177,10 @@ class Parser extends AbstractParser
             return $this->parsePrototype();
         }
 
+        if ($this->accept(Token::STRING_VALUE_TYPE)) {
+            return new AstPathPart($this->consume());
+        }
+
         throw new ParserException($this->acceptedTokenTypes, $this->lookahead, $this->source);
     }
 
