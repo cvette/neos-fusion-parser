@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vette\FusionParser;
 
+use Closure;
 use LogicException;
 
 /**
@@ -37,8 +38,8 @@ class Lexer
     private const LBRACE = '/{/A';
     private const RBRACE = '/}/A';
 
-    private const INCLUDE_KEYWORD = '/include[ \t\f]?:/A';
-    private const NAMESPACE_KEYWORD = '/namespace[ \t\f]?:/A';
+    private const INCLUDE_KEYWORD = '/include/A';
+    private const NAMESPACE_KEYWORD = '/namespace/A';
     private const INCLUDE_VALUE = '/.*/A';
 
     private const PROTOTYPE_KEYWORD = '/prototype/A';
@@ -86,7 +87,7 @@ class Lexer
     /** @var string */
     protected $code = '';
 
-    /** @var array<array<\Closure>> */
+    /** @var array<array<Closure>> */
     protected $stateDefinitions = [];
 
     /** @var bool */
@@ -115,17 +116,29 @@ class Lexer
                 },
                 self::MULTI_LINE_COMMENT => static function (): void {
                 },
-                self::PROTOTYPE_KEYWORD => function (string $text): void {
-                    $this->pushToken(Token::PROTOTYPE_KEYWORD_TYPE, $text);
-                    $this->pushState(self::STATE_PROTOTYPE_FOUND);
+                self::PROTOTYPE_KEYWORD => function (string $text): bool {
+                    if ($this->lookahead(strlen($text), self::LPAREN, false)) {
+                        $this->pushToken(Token::PROTOTYPE_KEYWORD_TYPE, $text);
+                        $this->pushState(self::STATE_PROTOTYPE_FOUND);
+                        return true;
+                    }
+                    return false;
                 },
-                self::INCLUDE_KEYWORD => function (string $text): void {
-                    $this->pushToken(Token::INCLUDE_KEYWORD_TYPE, $text);
-                    $this->pushState(self::STATE_INCLUDE_FOUND);
+                self::INCLUDE_KEYWORD => function (string $text): bool {
+                    if ($this->lookahead(strlen($text), self::COLON, true)) {
+                        $this->pushToken(Token::INCLUDE_KEYWORD_TYPE, $text);
+                        $this->pushState(self::STATE_INCLUDE_FOUND);
+                        return true;
+                    }
+                    return false;
                 },
-                self::NAMESPACE_KEYWORD => function (string $text): void {
-                    $this->pushToken(Token::NAMESPACE_KEYWORD_TYPE, $text);
-                    $this->pushState(self::STATE_NAMESPACE_FOUND);
+                self::NAMESPACE_KEYWORD => function (string $text): bool {
+                    if ($this->lookahead(strlen($text), self::COLON, true)) {
+                        $this->pushToken(Token::NAMESPACE_KEYWORD_TYPE, $text);
+                        $this->pushState(self::STATE_NAMESPACE_FOUND);
+                        return true;
+                    }
+                    return false;
                 },
                 self::OBJECT_PATH_PART => function (string $text): void {
                     $this->pushToken(Token::OBJECT_PATH_PART_TYPE, $text);
@@ -337,9 +350,11 @@ class Lexer
     {
         foreach ($this->stateDefinitions[$this->state] as $pattern => $function) {
             if (preg_match($pattern, $this->code, $match, 0, $this->cursor)) {
-                $function($match[0]);
-                $this->moveCursor($match[0]);
-                return true;
+                $move = $function($match[0]);
+                if ($move === null || $move === true) {
+                    $this->moveCursor($match[0]);
+                    return true;
+                }
             }
         }
 
@@ -415,5 +430,26 @@ class Lexer
         }
 
         $this->state = array_pop($this->states);
+    }
+
+    /**
+     * Lookahead
+     *
+     * @param int $offset
+     * @param string $token
+     * @param bool $acceptWhitespace
+     * @return bool
+     */
+    protected function lookahead(int $offset, string $token, bool $acceptWhitespace): bool
+    {
+        if ($acceptWhitespace && preg_match('/[ \t\f]?/A', $this->code, $match, 0, $this->cursor + $offset)) {
+            $offset += strlen($match[0]);
+        }
+
+        if (preg_match($token, $this->code, $match, 0, $this->cursor + $offset)) {
+            return true;
+        }
+
+        return false;
     }
 }
