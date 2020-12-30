@@ -40,6 +40,16 @@ class TokenStream implements Iterator
         }
     }
 
+    public function getTokenAt(int $index): Token
+    {
+        return $this->tokens[$index];
+    }
+
+    public function getPointer(): int
+    {
+        return $this->pointer;
+    }
+
     public function current(): Token
     {
         return $this->tokens[$this->pointer];
