@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vette\FusionParser;
 
+use Countable;
 use Iterator;
 
 /**
@@ -11,9 +12,9 @@ use Iterator;
  *
  * @package Vette\FusionParser
  */
-class TokenStream implements Iterator
+class TokenStream implements Iterator, Countable
 {
-    /** @var array<Token> */
+    /** @var Token[] */
     private $tokens;
 
     /** @var Source|null */
@@ -21,6 +22,8 @@ class TokenStream implements Iterator
 
     /** @var int */
     private $pointer;
+
+    const WHITESPACE_TOKEN_TYPES = [Token::WHITESPACE_TYPE, Token::LINE_BREAK];
 
 
     /**
@@ -47,6 +50,21 @@ class TokenStream implements Iterator
         }
 
         return $this->tokens[$index];
+    }
+
+    /**
+     * @param int $offset
+     * @return Token|null
+     */
+    public function findNextNonWhitespaceToken(int $offset): ?Token
+    {
+        for ($i = $offset; $offset < count($this->tokens); $i++) {
+            if (!in_array($this->tokens[$i]->getType(), self::WHITESPACE_TOKEN_TYPES)) {
+                return $this->tokens[$i];
+            }
+        }
+
+        return null;
     }
 
     public function getPointer(): int
