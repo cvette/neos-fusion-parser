@@ -40,8 +40,12 @@ class TokenStream implements Iterator
         }
     }
 
-    public function getTokenAt(int $index): Token
+    public function getTokenAt(int $index): ?Token
     {
+        if (!isset($this->tokens[$index])) {
+            return null;
+        }
+
         return $this->tokens[$index];
     }
 
@@ -78,5 +82,10 @@ class TokenStream implements Iterator
     public function getSource(): ?Source
     {
         return $this->source;
+    }
+
+    public function count(): int
+    {
+        return count($this->tokens);
     }
 }
