@@ -67,6 +67,27 @@ class TokenStream implements Iterator, Countable
         return null;
     }
 
+    /**
+     * @param int $offset
+     * @param int $tokenType
+     * @param int $untilTokenType
+     * @return Token|null
+     */
+    public function findNextToken(int $offset, int $tokenType, int $untilTokenType): ?Token
+    {
+        for ($i = $offset; $offset < count($this->tokens); $i++) {
+            if ($this->tokens[$i]->getType() === $untilTokenType) {
+                return null;
+            }
+
+            if ($this->tokens[$i]->getType() === $tokenType) {
+                return $this->tokens[$i];
+            }
+        }
+
+        return null;
+    }
+
     public function getPointer(): int
     {
         return $this->pointer;
