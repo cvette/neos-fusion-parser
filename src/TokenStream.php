@@ -58,7 +58,7 @@ class TokenStream implements Iterator, Countable
      */
     public function findNextNonWhitespaceToken(int $offset): ?Token
     {
-        for ($i = $offset; $offset < count($this->tokens); $i++) {
+        for ($i = $offset; $i < count($this->tokens); $i++) {
             if (!in_array($this->tokens[$i]->getType(), self::WHITESPACE_TOKEN_TYPES)) {
                 return $this->tokens[$i];
             }
@@ -75,7 +75,7 @@ class TokenStream implements Iterator, Countable
      */
     public function findNextToken(int $offset, int $tokenType, int $untilTokenType): ?Token
     {
-        for ($i = $offset; $offset < count($this->tokens); $i++) {
+        for ($i = $offset; $i < count($this->tokens); $i++) {
             if ($this->tokens[$i]->getType() === $untilTokenType) {
                 return null;
             }
