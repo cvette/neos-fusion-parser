@@ -20,6 +20,8 @@ final class Token
     /** @var int  */
     private $lineno;
 
+    private $column;
+
     public const EOF_TYPE = -1;
     public const WHITESPACE_TYPE = 0;
     public const LINE_BREAK = 1;
@@ -59,12 +61,14 @@ final class Token
      * @param int $type The type of the token
      * @param string $value The token value
      * @param int $lineno The line position in the source
+     * @param int $column The column on the line
      */
-    public function __construct(int $type, string $value, int $lineno)
+    public function __construct(int $type, string $value, int $lineno, int $column)
     {
         $this->type = $type;
         $this->value = $value;
         $this->lineno = $lineno;
+        $this->column = $column;
     }
 
     public function __toString(): string
@@ -79,6 +83,11 @@ final class Token
     public function getLine(): int
     {
         return $this->lineno;
+    }
+
+    public function getColumn(): int
+    {
+        return $this->column;
     }
 
     public function getType(): int
