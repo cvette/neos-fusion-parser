@@ -395,7 +395,7 @@ class Lexer
             return;
         }
 
-        $this->tokens[] = new Token($type, $value, $this->lineNumber, $this->getColumn());
+        $this->tokens[] = new Token($type, $value, $this->lineNumber, $this->getColumn(), $this->cursor);
     }
 
     /**

@@ -20,7 +20,11 @@ final class Token
     /** @var int  */
     private $lineno;
 
+    /** @var int */
     private $column;
+
+    /** @var int */
+    private $offset;
 
     public const EOF_TYPE = -1;
     public const WHITESPACE_TYPE = 0;
@@ -62,13 +66,15 @@ final class Token
      * @param string $value The token value
      * @param int $lineno The line position in the source
      * @param int $column The column on the line
+     * @param int $offset
      */
-    public function __construct(int $type, string $value, int $lineno, int $column)
+    public function __construct(int $type, string $value, int $lineno, int $column, int $offset)
     {
         $this->type = $type;
         $this->value = $value;
         $this->lineno = $lineno;
         $this->column = $column;
+        $this->offset = $offset;
     }
 
     public function __toString(): string
@@ -98,6 +104,11 @@ final class Token
     public function getValue(): string
     {
         return $this->value;
+    }
+
+    public function getOffset(): int
+    {
+        return $this->offset;
     }
 
     /**
