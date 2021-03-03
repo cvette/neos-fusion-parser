@@ -7,6 +7,11 @@ namespace Vette\FusionParser\Ast\Nodes;
 use Vette\FusionParser\Ast\AstNodeVisitor;
 use Vette\FusionParser\Token;
 
+/**
+ * Class AstPathPart
+ *
+ * @package Vette\FusionParser\Ast\Nodes
+ */
 class AstPathPart extends AstNode
 {
     /** @var Token */

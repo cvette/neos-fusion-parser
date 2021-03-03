@@ -22,6 +22,11 @@ use Vette\FusionParser\Ast\Nodes\AstPathPart;
 use Vette\FusionParser\Ast\Nodes\AstPrototype;
 use Vette\FusionParser\Ast\Nodes\AstUnset;
 
+/**
+ * Class JsonAstNodeVisitor
+ *
+ * @package Vette\FusionParser
+ */
 class JsonAstNodeVisitor extends AstNodeVisitor
 {
     protected $jsonData = [];

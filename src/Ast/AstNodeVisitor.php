@@ -21,6 +21,11 @@ use Vette\FusionParser\Ast\Nodes\AstPathPart;
 use Vette\FusionParser\Ast\Nodes\AstPrototype;
 use Vette\FusionParser\Ast\Nodes\AstUnset;
 
+/**
+ * Class AstNodeVisitor
+ *
+ * @package Vette\FusionParser\Ast
+ */
 abstract class AstNodeVisitor
 {
     abstract public function visitFile(AstFile $file);

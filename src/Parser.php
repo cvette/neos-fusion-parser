@@ -145,7 +145,7 @@ class Parser extends AbstractParser
      *
      * @throws ParserException
      */
-    public function parsePath(): AstPath
+    protected function parsePath(): AstPath
     {
         $path = new AstPath();
         $path->addPart($this->parsePathPart());
@@ -163,7 +163,7 @@ class Parser extends AbstractParser
      *
      * @throws ParserException
      */
-    public function parsePathPart(): AstNode
+    protected function parsePathPart(): AstNode
     {
         if ($this->accept(Token::META_PROPERTY_KEYWORD_TYPE)) {
             return $this->parseMetaPath();
@@ -206,7 +206,7 @@ class Parser extends AbstractParser
      *
      * @throws ParserException
      */
-    public function parseMetaPath(): AstMetaPathPart
+    protected function parseMetaPath(): AstMetaPathPart
     {
         $this->expect(Token::META_PROPERTY_KEYWORD_TYPE);
         $pathPart = $this->expect(Token::OBJECT_PATH_PART_TYPE);

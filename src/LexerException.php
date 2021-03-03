@@ -13,10 +13,6 @@ use LogicException;
  */
 class LexerException extends LogicException
 {
-
-    /** @var int */
-    protected $lineNumber;
-
     /** @var string */
     protected $character;
 
@@ -30,7 +26,7 @@ class LexerException extends LogicException
      */
     public function __construct(int $lineNumber, string $character, string $message = "")
     {
-        $this->lineNumber = $lineNumber;
+        $this->line = $lineNumber;
         $this->character = $character;
 
         parent::__construct($message);

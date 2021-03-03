@@ -8,6 +8,8 @@ use Vette\FusionParser\Ast\AstNodeVisitor;
 
 /**
  * Class AstNode
+ *
+ * @package Vette\FusionParser\Ast\Nodes
  */
 abstract class AstNode
 {

@@ -1,8 +1,12 @@
 {
   "name": "vette/neos-fusion-parser",
+  "description": "Neos Fusion lexer and parser",
   "autoload": {
     "psr-4": {
       "Vette\\FusionParser\\": "src/"
     }
+  },
+  "require": {
+    "ext-json": "*"
   }
 }

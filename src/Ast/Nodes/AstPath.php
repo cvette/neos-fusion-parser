@@ -6,6 +6,11 @@ namespace Vette\FusionParser\Ast\Nodes;
 
 use Vette\FusionParser\Ast\AstNodeVisitor;
 
+/**
+ * Class AstPath
+ *
+ * @package Vette\FusionParser\Ast\Nodes
+ */
 class AstPath extends AstNode
 {
     /** @var array<AstNode> */
