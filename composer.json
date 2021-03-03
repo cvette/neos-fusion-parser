@@ -1,5 +1,5 @@
 {
-  "name": "vette/neos-fusion-parser",
+  "name": "cvette/neos-fusion-parser",
   "description": "Neos Fusion lexer and parser",
   "autoload": {
     "psr-4": {
