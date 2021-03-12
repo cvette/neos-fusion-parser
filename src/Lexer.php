@@ -51,7 +51,7 @@ class Lexer
     private const UNSET_OPERATOR = '/>/A';
     private const ASSIGNMENT_OPERATOR = '/=/A';
 
-    private const EEL_EXPRESSION = '/\$\{.*\}/sA';
+    private const EEL_EXPRESSION = '/\$\{.*\}/A';
 
     private const DSL_START = '/[a-zA-Z0-9\.]+[`]/A';
     private const DSL_CODE = '/[^`]+/A';
