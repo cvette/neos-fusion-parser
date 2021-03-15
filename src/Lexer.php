@@ -51,7 +51,28 @@ class Lexer
     private const UNSET_OPERATOR = '/>/A';
     private const ASSIGNMENT_OPERATOR = '/=/A';
 
-    private const EEL_EXPRESSION = '/\$\{.*\}/sA';
+    private const EEL_START = '/\$\{/A';
+
+    private const AND_OPERATOR = "/\|\||or|OR/A";
+    private const OR_OPERATOR = "/&&|and|AND/A";
+
+    private const ADDITION_OPERATOR = '/\+/A';
+    private const SUBTRACTION_OPERATOR = '/\-/A';
+    private const MODULO_OPERATOR = "/%/A";
+    private const DIVISION_OPERATOR = "/\//A";
+    private const MULTIPLICATION_OPERATOR = "/\*/A";
+    private const COMPARISON_OPERATOR = '/==|!=|<=|>=|<|>/A';
+    private const NEGATION_OPERATOR = '/not|!/A';
+
+    private const LBRACKET = '/\[/A';
+    private const RBRACKET = '/\]/A';
+
+    private const IF_KEYWORD = '/\?/A';
+    private const IF_SEPARATOR = '/\:/A';
+
+    private const EEL_IDENTIFIER = '/[a-zA-Z_][a-zA-Z0-9_\-]*/A';
+    private const EEL_VALUE_SEPARATOR = '/,/A';
+    private const EEL_DOUBLE_ARROW = '/=>/A';
 
     private const DSL_START = '/[a-zA-Z0-9\.]+[`]/A';
     private const DSL_CODE = '/[^`]+/A';
@@ -92,6 +113,9 @@ class Lexer
 
     /** @var bool */
     protected $ignoreWhitespace = true;
+
+    /** @var int */
+    protected $currentEelNestingLevel = 0;
 
 
     /**
@@ -215,9 +239,9 @@ class Lexer
                     $this->pushToken(Token::OBJECT_IDENTIFIER_TYPE, $text);
                     $this->pushState(self::STATE_OBJECT_IDENTIFIER_VALUE_FOUND);
                 },
-                self::EEL_EXPRESSION => function (string $text): void {
-                    $this->pushToken(Token::EEL_EXPRESSION_TYPE, $text);
-                    $this->popState();
+                self::EEL_START => function (string $text): void {
+                    $this->pushToken(Token::EEL_START_TYPE, $text);
+                    $this->pushState(self::STATE_EEL_EXPRESSION_FOUND);
                 },
             ],
             self::STATE_OBJECT_IDENTIFIER_VALUE_FOUND => [
@@ -245,9 +269,91 @@ class Lexer
             ],
             self::STATE_EEL_EXPRESSION_FOUND => [
                 self::RBRACE => function (string $text): void {
-                    $this->pushToken(Token::RBRACE_TYPE, $text);
-                    $this->popState();
+                    $this->pushToken(Token::EEL_END_TYPE, $text);
+
+                    if ($this->currentEelNestingLevel === 0) {
+                        $this->popState();
+                        $this->popState();
+                    } else {
+                        $this->currentEelNestingLevel--;
+                    }
                 },
+                self::LBRACE => function (string $text): void {
+                    $this->pushToken(Token::EEL_END_TYPE, $text);
+                    $this->currentEelNestingLevel++;
+                },
+                self::DOT => function (string $text): void {
+                    $this->pushToken(Token::EEL_IDENTIFIER_SEPARATOR_TYPE, $text);
+                },
+                self::EEL_VALUE_SEPARATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_VALUE_SEPARATOR_TYPE, $text);
+                },
+                self::AND_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_AND_OPERATOR_TYPE, $text);
+                },
+                self::OR_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_OR_OPERATOR_TYPE, $text);
+                },
+                self::IF_KEYWORD => function (string $text): void {
+                    $this->pushToken(Token::EEL_IF_KEYWORD_TYPE, $text);
+                },
+                self::IF_SEPARATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_IF_SEPARATOR_TYPE, $text);
+                },
+                self::ADDITION_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_ADDITION_OPERATOR_TYPE, $text);
+                },
+                self::SUBTRACTION_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_SUBTRACTION_OPERATOR_TYPE, $text);
+                },
+                self::MODULO_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_MODULO_OPERATOR_TYPE, $text);
+                },
+                self::DIVISION_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_DIVISION_OPERATOR_TYPE, $text);
+                },
+                self::MULTIPLICATION_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_MULTIPLICATION_OPERATOR_TYPE, $text);
+                },
+                self::EEL_DOUBLE_ARROW => function (string $text): void {
+                    $this->pushToken(Token::EEL_DOUBLE_ARROW_TYPE, $text);
+                },
+                self::COMPARISON_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_COMPARISON_OPERATOR_TYPE, $text);
+                },
+                self::NEGATION_OPERATOR => function (string $text): void {
+                    $this->pushToken(Token::EEL_NEGATION_OPERATOR_TYPE, $text);
+                },
+                self::LBRACKET => function (string $text): void {
+                    $this->pushToken(Token::EEL_LBRACKET_TYPE, $text);
+                },
+                self::RBRACKET => function (string $text): void {
+                    $this->pushToken(Token::EEL_RBRACKET_TYPE, $text);
+                },
+                self::LPAREN => function (string $text): void {
+                    $this->pushToken(Token::EEL_LPAREN_TYPE, $text);
+                },
+                self::RPAREN => function (string $text): void {
+                    $this->pushToken(Token::EEL_RPAREN_TYPE, $text);
+                },
+                self::EEL_IDENTIFIER => function (string $text): void {
+                    $this->pushToken(Token::EEL_IDENTIFIER_TYPE, $text);
+                },
+                self::BOOLEAN_VALUE => function (string $text): void {
+                    $this->pushToken(Token::EEL_BOOLEAN_VALUE_TYPE, $text);
+                },
+                self::NULL_VALUE => function (string $text): void {
+                    $this->pushToken(Token::EEL_NULL_VALUE_TYPE, $text);
+                },
+                self::NUMBER_VALUE => function (string $text): void {
+                    $this->pushToken(Token::EEL_NUMBER_VALUE_TYPE, $text);
+                },
+                self::FLOAT_NUMBER_VALUE => function (string $text): void {
+                    $this->pushToken(Token::EEL_FLOAT_NUMBER_VALUE_TYPE, $text);
+                },
+                self::STRING_VALUE => function (string $text): void {
+                    $this->pushToken(Token::EEL_STRING_VALUE_TYPE, $text);
+                }
             ],
             self::STATE_DSL_FOUND => [
                 self::DSL_CODE => function (string $text): void {

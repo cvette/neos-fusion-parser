@@ -53,12 +53,44 @@ final class Token
     public const DSL_CODE_TYPE = 19;
     public const DSL_END_TYPE = 20;
 
-    public const EEL_EXPRESSION_TYPE = 21;
-    public const NULL_VALUE_TYPE = 22;
-    public const BOOLEAN_VALUE_TYPE = 23;
-    public const NUMBER_VALUE_TYPE = 24;
-    public const FLOAT_NUMBER_VALUE_TYPE = 25;
-    public const STRING_VALUE_TYPE = 26;
+    public const EEL_START_TYPE = 21;
+    public const EEL_END_TYPE = 22;
+
+    public const EEL_IF_KEYWORD_TYPE = 23;
+    public const EEL_IF_SEPARATOR_TYPE = 24;
+    public const EEL_AND_OPERATOR_TYPE = 25;
+    public const EEL_OR_OPERATOR_TYPE = 26;
+
+    public const EEL_LPAREN_TYPE = 27;
+    public const EEL_RPAREN_TYPE = 28;
+
+    public const EEL_LBRACKET_TYPE = 29;
+    public const EEL_RBRACKET_TYPE = 30;
+
+    public const EEL_ADDITION_OPERATOR_TYPE = 31;
+    public const EEL_SUBTRACTION_OPERATOR_TYPE = 32;
+    public const EEL_MULTIPLICATION_OPERATOR_TYPE = 33;
+    public const EEL_DIVISION_OPERATOR_TYPE = 34;
+    public const EEL_MODULO_OPERATOR_TYPE = 35;
+    public const EEL_COMPARISON_OPERATOR_TYPE = 35;
+    public const EEL_NEGATION_OPERATOR_TYPE = 36;
+
+    public const EEL_IDENTIFIER_TYPE = 37;
+    public const EEL_IDENTIFIER_SEPARATOR_TYPE = 38;
+    public const EEL_VALUE_SEPARATOR_TYPE = 39;
+    public const EEL_DOUBLE_ARROW_TYPE = 40;
+
+    public const EEL_NULL_VALUE_TYPE = 41;
+    public const EEL_BOOLEAN_VALUE_TYPE = 42;
+    public const EEL_NUMBER_VALUE_TYPE = 43;
+    public const EEL_FLOAT_NUMBER_VALUE_TYPE = 44;
+    public const EEL_STRING_VALUE_TYPE = 45;
+
+    public const NULL_VALUE_TYPE = 46;
+    public const BOOLEAN_VALUE_TYPE = 47;
+    public const NUMBER_VALUE_TYPE = 48;
+    public const FLOAT_NUMBER_VALUE_TYPE = 49;
+    public const STRING_VALUE_TYPE = 50;
 
 
     /**
@@ -191,17 +223,83 @@ final class Token
             case self::META_PROPERTY_KEYWORD_TYPE:
                 $name = 'META_PROPERTY_KEYWORD_TYPE';
                 break;
-            case self::EEL_EXPRESSION_TYPE:
-                $name = 'EEL_EXPRESSION_TYPE';
+            case self::EEL_START_TYPE:
+                $name = 'EEL_START_TYPE';
+                break;
+            case self::EEL_END_TYPE:
+                $name = 'EEL_END_TYPE';
+                break;
+            case self::EEL_IF_KEYWORD_TYPE:
+                $name = 'EEL_IF_KEYWORD_TYPE';
+                break;
+            case self::EEL_ADDITION_OPERATOR_TYPE:
+                $name = 'EEL_ADDITION_OPERATOR_TYPE';
+                break;
+            case self::EEL_AND_OPERATOR_TYPE:
+                $name = 'EEL_AND_OPERATOR_TYPE';
+                break;
+            case self::EEL_BOOLEAN_VALUE_TYPE:
+                $name = 'EEL_BOOLEAN_VALUE_TYPE';
+                break;
+            case self::EEL_COMPARISON_OPERATOR_TYPE:
+                $name = 'EEL_COMPARISON_OPERATOR_TYPE';
+                break;
+            case self::EEL_DIVISION_OPERATOR_TYPE:
+                $name = 'EEL_DIVISION_OPERATOR_TYPE';
+                break;
+            case self::EEL_DOUBLE_ARROW_TYPE:
+                $name = 'EEL_DOUBLE_ARROW_TYPE';
+                break;
+            case self::EEL_FLOAT_NUMBER_VALUE_TYPE:
+                $name = 'EEL_FLOAT_NUMBER_VALUE_TYPE';
+                break;
+            case self::EEL_IDENTIFIER_SEPARATOR_TYPE:
+                $name = 'EEL_IDENTIFIER_SEPARATOR_TYPE';
+                break;
+            case self::EEL_LPAREN_TYPE:
+                $name = 'EEL_LPAREN_TYPE';
+                break;
+            case self::EEL_RPAREN_TYPE:
+                $name = 'EEL_RPAREN_TYPE';
+                break;
+            case self::EEL_MODULO_OPERATOR_TYPE:
+                $name = 'EEL_MODULO_OPERATOR_TYPE';
+                break;
+            case self::EEL_MULTIPLICATION_OPERATOR_TYPE:
+                $name = 'EEL_MULTIPLICATION_OPERATOR_TYPE';
+                break;
+            case self::EEL_NEGATION_OPERATOR_TYPE:
+                $name = 'EEL_NEGATION_OPERATOR_TYPE';
+                break;
+            case self::EEL_NULL_VALUE_TYPE:
+                $name = 'EEL_NULL_VALUE_TYPE';
+                break;
+            case self::EEL_NUMBER_VALUE_TYPE:
+                $name = 'EEL_NUMBER_VALUE_TYPE';
+                break;
+            case self::EEL_OR_OPERATOR_TYPE:
+                $name = 'EEL_OR_OPERATOR_TYPE';
+                break;
+            case self::EEL_RBRACKET_TYPE:
+                $name = 'EEL_RBRACKET_TYPE';
+                break;
+            case self::EEL_STRING_VALUE_TYPE:
+                $name = 'EEL_STRING_VALUE_TYPE';
+                break;
+            case self::EEL_SUBTRACTION_OPERATOR_TYPE:
+                $name = 'EEL_SUBTRACTION_OPERATOR_TYPE';
+                break;
+            case self::EEL_VALUE_SEPARATOR_TYPE:
+                $name = 'EEL_VALUE_SEPARATOR_TYPE';
+                break;
+            case self::EEL_IF_SEPARATOR_TYPE:
+                $name = 'DSL_END_TYPE';
                 break;
             case self::DSL_START_TYPE:
                 $name = 'DSL_START_TYPE';
                 break;
             case self::DSL_CODE_TYPE:
                 $name = 'DSL_CODE_TYPE';
-                break;
-            case self::DSL_END_TYPE:
-                $name = 'DSL_END_TYPE';
                 break;
             default:
                 throw new LogicException(sprintf('Token of type "%s" does not exist.', $type));
