@@ -141,7 +141,7 @@ class Lexer
                 self::MULTI_LINE_COMMENT => static function (): void {
                 },
                 self::PROTOTYPE_KEYWORD => function (string $text): bool {
-                    if ($this->lookahead(strlen($text), self::LPAREN, false)) {
+                    if ($this->lookahead(mb_strlen($text), self::LPAREN, false)) {
                         $this->pushToken(Token::PROTOTYPE_KEYWORD_TYPE, $text);
                         $this->pushState(self::STATE_PROTOTYPE_FOUND);
                         return true;
@@ -149,7 +149,7 @@ class Lexer
                     return false;
                 },
                 self::INCLUDE_KEYWORD => function (string $text): bool {
-                    if ($this->lookahead(strlen($text), self::COLON, true)) {
+                    if ($this->lookahead(mb_strlen($text), self::COLON, true)) {
                         $this->pushToken(Token::INCLUDE_KEYWORD_TYPE, $text);
                         $this->pushState(self::STATE_INCLUDE_FOUND);
                         return true;
@@ -157,7 +157,7 @@ class Lexer
                     return false;
                 },
                 self::NAMESPACE_KEYWORD => function (string $text): bool {
-                    if ($this->lookahead(strlen($text), self::COLON, true)) {
+                    if ($this->lookahead(mb_strlen($text), self::COLON, true)) {
                         $this->pushToken(Token::NAMESPACE_KEYWORD_TYPE, $text);
                         $this->pushState(self::STATE_NAMESPACE_FOUND);
                         return true;
@@ -408,7 +408,7 @@ class Lexer
         $this->state = self::STATE_INITIAL;
 
         $this->code = str_replace(["\r\n", "\r"], "\n", $source->getCode());
-        $this->end = strlen($this->code);
+        $this->end = mb_strlen($this->code);
 
         while ($this->cursor < $this->end) {
             if ($this->lexState() || $this->lexWhitespace()) {
@@ -441,10 +441,10 @@ class Lexer
      */
     private function getColumn(): int
     {
-        $lines = explode("\n", substr($this->code, 0, $this->cursor));
+        $lines = explode("\n", mb_substr($this->code, 0, $this->cursor));
         $lastLine = end($lines);
 
-        return strlen($lastLine);
+        return mb_strlen($lastLine);
     }
 
     /**
@@ -511,7 +511,7 @@ class Lexer
      */
     protected function moveCursor(string $text): void
     {
-        $this->cursor += strlen($text);
+        $this->cursor += mb_strlen($text);
         $this->lineNumber += substr_count($text, "\n");
     }
 
@@ -549,7 +549,7 @@ class Lexer
     protected function lookahead(int $offset, string $token, bool $acceptWhitespace): bool
     {
         if ($acceptWhitespace && preg_match('/[ \t\f]?/A', $this->code, $match, 0, $this->cursor + $offset)) {
-            $offset += strlen($match[0]);
+            $offset += mb_strlen($match[0]);
         }
 
         if (preg_match($token, $this->code, $match, 0, $this->cursor + $offset)) {
