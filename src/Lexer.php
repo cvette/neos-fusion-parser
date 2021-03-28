@@ -408,7 +408,7 @@ class Lexer
         $this->state = self::STATE_INITIAL;
 
         $this->code = str_replace(["\r\n", "\r"], "\n", $source->getCode());
-        $this->end = mb_strlen($this->code);
+        $this->end = strlen($this->code);
 
         while ($this->cursor < $this->end) {
             if ($this->lexState() || $this->lexWhitespace()) {
@@ -511,8 +511,8 @@ class Lexer
      */
     protected function moveCursor(string $text): void
     {
-        $this->cursor += mb_strlen($text);
-        $this->lineNumber += substr_count($text, "\n");
+        $this->cursor += strlen($text);
+        $this->lineNumber += mb_substr_count($text, "\n");
     }
 
     /**
@@ -549,7 +549,7 @@ class Lexer
     protected function lookahead(int $offset, string $token, bool $acceptWhitespace): bool
     {
         if ($acceptWhitespace && preg_match('/[ \t\f]?/A', $this->code, $match, 0, $this->cursor + $offset)) {
-            $offset += mb_strlen($match[0]);
+            $offset += strlen($match[0]);
         }
 
         if (preg_match($token, $this->code, $match, 0, $this->cursor + $offset)) {
