@@ -29,7 +29,7 @@ class Lexer
     private const WHITESPACE = '/[ \t\f]+/A';
 
     private const SINGLE_LINE_COMMENT = '/(#|\/\/).*(\n|$)/A';
-    private const MULTI_LINE_COMMENT = '/\/\*(.|\n)*\*\//A';
+    private const MULTI_LINE_COMMENT = '/\/\*(.|\n)*\*\//uA';
 
     private const DOT = '/\./A';
     private const COLON = '/:/A';
