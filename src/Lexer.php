@@ -441,7 +441,7 @@ class Lexer
      */
     private function getColumn(): int
     {
-        $lines = explode("\n", mb_substr($this->code, 0, $this->cursor));
+        $lines = explode("\n", substr($this->code, 0, $this->cursor));
         $lastLine = end($lines);
 
         return mb_strlen($lastLine);
