@@ -429,8 +429,9 @@ class Lexer
     {
         throw new LexerException(
             $this->lineNumber,
+            $this->getColumn(),
             $this->code[$this->cursor],
-            'Fusion parsing error: Unexpected character "' . $this->code[$this->cursor] . '" on line ' . $this->lineNumber . ' position ' . $this->getColumn() . '.'
+            'Unexpected character "' . $this->code[$this->cursor] . '"'
         );
     }
 
