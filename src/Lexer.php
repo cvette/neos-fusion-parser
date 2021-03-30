@@ -141,7 +141,7 @@ class Lexer
                 self::MULTI_LINE_COMMENT => static function (): void {
                 },
                 self::PROTOTYPE_KEYWORD => function (string $text): bool {
-                    if ($this->lookahead(mb_strlen($text), self::LPAREN, false)) {
+                    if ($this->lookahead(strlen($text), self::LPAREN, false)) {
                         $this->pushToken(Token::PROTOTYPE_KEYWORD_TYPE, $text);
                         $this->pushState(self::STATE_PROTOTYPE_FOUND);
                         return true;
@@ -149,7 +149,7 @@ class Lexer
                     return false;
                 },
                 self::INCLUDE_KEYWORD => function (string $text): bool {
-                    if ($this->lookahead(mb_strlen($text), self::COLON, true)) {
+                    if ($this->lookahead(strlen($text), self::COLON, true)) {
                         $this->pushToken(Token::INCLUDE_KEYWORD_TYPE, $text);
                         $this->pushState(self::STATE_INCLUDE_FOUND);
                         return true;
@@ -157,7 +157,7 @@ class Lexer
                     return false;
                 },
                 self::NAMESPACE_KEYWORD => function (string $text): bool {
-                    if ($this->lookahead(mb_strlen($text), self::COLON, true)) {
+                    if ($this->lookahead(strlen($text), self::COLON, true)) {
                         $this->pushToken(Token::NAMESPACE_KEYWORD_TYPE, $text);
                         $this->pushState(self::STATE_NAMESPACE_FOUND);
                         return true;
@@ -288,12 +288,6 @@ class Lexer
                 self::EEL_VALUE_SEPARATOR => function (string $text): void {
                     $this->pushToken(Token::EEL_VALUE_SEPARATOR_TYPE, $text);
                 },
-                self::AND_OPERATOR => function (string $text): void {
-                    $this->pushToken(Token::EEL_AND_OPERATOR_TYPE, $text);
-                },
-                self::OR_OPERATOR => function (string $text): void {
-                    $this->pushToken(Token::EEL_OR_OPERATOR_TYPE, $text);
-                },
                 self::IF_KEYWORD => function (string $text): void {
                     $this->pushToken(Token::EEL_IF_KEYWORD_TYPE, $text);
                 },
@@ -322,7 +316,19 @@ class Lexer
                     $this->pushToken(Token::EEL_COMPARISON_OPERATOR_TYPE, $text);
                 },
                 self::NEGATION_OPERATOR => function (string $text): void {
-                    $this->pushToken(Token::EEL_NEGATION_OPERATOR_TYPE, $text);
+                    if ($this->lookahead(strlen($text), self::WHITESPACE, true)) {
+                        $this->pushToken(Token::EEL_NEGATION_OPERATOR_TYPE, $text);
+                    }
+                },
+                self::AND_OPERATOR => function (string $text): void {
+                    if ($this->lookahead(strlen($text), self::WHITESPACE, true)) {
+                        $this->pushToken(Token::EEL_AND_OPERATOR_TYPE, $text);
+                    }
+                },
+                self::OR_OPERATOR => function (string $text): void {
+                    if ($this->lookahead(strlen($text), self::WHITESPACE, true)) {
+                        $this->pushToken(Token::EEL_OR_OPERATOR_TYPE, $text);
+                    }
                 },
                 self::LBRACKET => function (string $text): void {
                     $this->pushToken(Token::EEL_LBRACKET_TYPE, $text);
